@@ -13,7 +13,7 @@ import json
 BASE_URL = "https://vindecodervehicle.com/api/"
 TEST_VIN = "WF0GXXGAJ69C71882"
 TEST_BRAND = "bmw"
-TEST_MODEL = ""
+
 
 
 def get_credentials() -> tuple[str, str]:
@@ -141,16 +141,65 @@ def main() -> None:
         from vindecodervehicle import VinDecoderClient
 
         client = VinDecoderClient.create(user, key)
+        sdk_car_id = None
+        sdk_model_slug = None
 
         def sdk_decode():
+            nonlocal sdk_car_id
             v = client.decode_vin(TEST_VIN)
-            return {"summary": v.full_name}
+            sdk_car_id = v.car_id
+            return {"summary": f"{v.full_name} (carId={sdk_car_id})"}
+
+        def sdk_decode_all():
+            return {"summary": f"{len(client.decode_vin_all(TEST_VIN))} vehicles"}
+
+        def sdk_engines():
+            return {"summary": f"{len(client.get_engines(TEST_VIN))} engines"}
+
+        def sdk_vehicle():
+            if not sdk_car_id:
+                raise RuntimeError("No carId from SDK decode")
+            return {"summary": client.get_vehicle(sdk_car_id).make}
+
+        def sdk_fluids():
+            if not sdk_car_id:
+                raise RuntimeError("No carId")
+            return {"summary": f"{len(client.get_fluid_capacities(sdk_car_id))} fluids"}
+
+        def sdk_oem_parts():
+            if not sdk_car_id:
+                raise RuntimeError("No carId")
+            return {"summary": f"{len(client.get_oem_parts(sdk_car_id))} OEM groups"}
+
+        def sdk_repair_times():
+            if not sdk_car_id:
+                raise RuntimeError("No carId")
+            return {"summary": f"{len(client.get_repair_times(sdk_car_id))} repairs"}
 
         def sdk_brands():
             return {"summary": f"{len(client.list_brands())} brands"}
 
+        def sdk_models():
+            return {"summary": f"{len(client.list_models(TEST_BRAND))} models"}
+
+        def sdk_variants():
+            nonlocal sdk_model_slug
+            models = client.list_models(TEST_BRAND)
+            if not models:
+                raise RuntimeError("No BMW models returned")
+            sdk_model_slug = models[0].slug
+            return {"summary": f"{len(client.list_variants(TEST_BRAND, sdk_model_slug))} variants ({sdk_model_slug})"}
+
         run("VinDecoderClient.decode_vin()", sdk_decode)
+        run("VinDecoderClient.decode_vin_all()", sdk_decode_all)
+        run("VinDecoderClient.get_engines()", sdk_engines)
+        run("VinDecoderClient.get_vehicle()", sdk_vehicle)
+        run("VinDecoderClient.get_fluid_capacities()", sdk_fluids)
+        run("VinDecoderClient.get_oem_parts()", sdk_oem_parts, plan_limited=True)
+        run("VinDecoderClient.get_repair_times()", sdk_repair_times, plan_limited=True)
         run("VinDecoderClient.list_brands()", sdk_brands)
+        run("VinDecoderClient.list_models()", sdk_models)
+        run("VinDecoderClient.list_variants()", sdk_variants)
     except ImportError:
         print("  SKIP Python SDK (not installed)")
 
