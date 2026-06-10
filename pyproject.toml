@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "vindecodervehicle-sdk"
+name = "vindecodervehicle"
 version = "1.0.0"
 description = "Official Python SDK for the VIN Decoder Vehicle API"
 readme = "README.md"

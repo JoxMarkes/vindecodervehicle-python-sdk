@@ -1,7 +1,7 @@
 # VIN Decoder Vehicle — Python SDK
 
 [![CI](https://github.com/JoxMarkes/vindecodervehicle-python-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/JoxMarkes/vindecodervehicle-python-sdk/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/vindecodervehicle-sdk.svg)](https://pypi.org/project/vindecodervehicle-sdk/)
+[![PyPI](https://img.shields.io/pypi/v/vindecodervehicle.svg)](https://pypi.org/project/vindecodervehicle/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Official Python SDK for the **[VIN Decoder Vehicle API](https://vindecodervehicle.com)**.
@@ -16,7 +16,7 @@ Official Python SDK for the **[VIN Decoder Vehicle API](https://vindecodervehicl
 ## Installation
 
 ```bash
-pip install vindecodervehicle-sdk
+pip install vindecodervehicle
 ```
 
 ## Quick Start
